@@ -1,0 +1,72 @@
+{
+    "_id": "{mongodb id}",
+    "title": "Random",
+    "description": "A quiz on random topics",
+    "questions": [
+        {
+            "_id": "{some mongodb id}",
+            "question": "Which characters are part of the justice league",
+            "question_type": "multiple",
+            "choices": ["Red Skull", "Iron Man", "Star Lord", "The Hulk", "Thanos"],
+            "answer": ["Iron Man", "The Hulk", "Star Lord"]
+        },
+        {
+            "_id": "{some mongodb id}",
+            "question": "Caterpillars morph into what?",
+            "question_type": "single",
+            "choices": ["godzilla", "caterpillar", "butterfly", "popcicle"],
+            "answer": "butterfly"
+        },
+        {
+            "_id": "{some mongodb id}",
+            "question": "It take 1100 programmers to make a dozen",
+            "question_type": "true_false",
+            "choices": ["true", "false"],
+            "answer": "true"
+        }
+    ],
+    "submissions": [
+        {
+            "username": "john wick",
+            "grade": 0.33,
+            "questions": [
+                {
+                    "quistion_id": "{question ref id}",
+                    "answer": ["Red Skull"],
+                    "correct": "false"
+                },
+                {
+                    "question_id": "{question ref id}",
+                    "answer": "popcicle",
+                    "correct": "false"
+                },
+                {
+                    "question_id": "{question ref id}",
+                    "answer": "true",
+                    "correct": "false"
+                }
+            ]
+        },
+        {
+            "username": "alice",
+            "grade": 1.0,
+            "questions": [
+                {
+                    "question_id": "{question ref id}",
+                    "answer": ["Iron Man", "The Hulk", "Star Lord"],
+                    "correct": "true"
+                },
+                {
+                    "question_id": "{question ref id}",
+                    "answer": "butterfly",
+                    "correct": "true"
+                },
+                {
+                    "question_id": "{question ref id}",
+                    "answer": "true",
+                    "correct": "true"
+                }
+            ]
+        }
+    ]
+}

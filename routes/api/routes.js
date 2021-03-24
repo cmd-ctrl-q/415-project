@@ -1,16 +1,15 @@
 var Quiz = require('../../controller/quizzes'); 
+var Submission = require('../../controller/submissions'); 
 
 module.exports = (router) => {
     // quiz routes
-    router.get('/quizzes/', Quiz.getQuizzes); // ok
-    router.get('/quiz/:_id', Quiz.getQuizByID); // ok
-    router.post('/new/', Quiz.createQuiz); // ok
-    router.delete('/quiz/:id', Quiz.deleteQuiz); 
-    // router.get('/quiz/:title', Quizzes.getQuizByTitle);
-    // router.put('/quiz/:id', Quizes.updateQuiz);
+    router.get('/quizzes/', Quiz.getQuizzes);       // ok
+    router.get('/quiz/:id', Quiz.getQuizByID);      // ok 
+    router.post('/new/', Quiz.createQuiz);          // ok 
+    router.delete('/quiz/:id', Quiz.deleteQuiz);    // ok 
 
-    router.put('/quiz/:_id', Quiz.submitQuiz); // ok 
-    // get all submissions by quiz _id
-    router.get('/quiz/:_id/submissions', Quiz.getAllSubmissions); // ok 
-    // router.put('/quiz/:_id/submissions/username/:username', Quiz.getSubsByUsernameAndID);
+    // submission routes
+    router.post('/quiz/:id', Submission.createSubmission);                      // ok
+    router.get('/quiz/:id/submissions', Submission.getSubmissions);             // ok
+    router.get('/quiz/:id/submissions/:sub_id', Submission.getSubmissionByID);  // ok
 }

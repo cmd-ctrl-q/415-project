@@ -12,10 +12,8 @@ var quizSchema = new Schema({
             question: String, 
             question_type: String, 
             choices: Array,
-            answer: Schema.Types.Mixed
         }
     ],
-    submissions: [submissionSchema]
 });
 
 

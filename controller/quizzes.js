@@ -1,6 +1,12 @@
-var Quiz = require('../model/dao');
+var Quiz = require('../model/quiz.dao');
 
 exports.createQuiz = (req, res, next) => {
+    // validation 
+    // 400 request error
+    if(req.body.title === "" || req.body.description === "" || req.body.questions.length === 0 || req.params.id == ""){
+        res.status(400).json( { msg: "request error" });
+        return 
+    }
 
     let quiz = {
         title: req.body.title, 
@@ -9,51 +15,95 @@ exports.createQuiz = (req, res, next) => {
     };
 
     Quiz.create(quiz, (err, quiz) => {
-        // validate quiz 
+        // 500 db error
         if(err) {
-            // res.json({error: err})
-            res.status(400).json({ msg: "error bad request" })
-            return
+            res.status(500).json( {msg: "database error" });
+            return 
+        } 
+
+        // 404 not found
+        if(quiz === null) {
+            res.status(404).json( {msg: "not found error" });
+            return            
         }
-        res.status(200).json({ msg: "Quiz created successfully", quiz: quiz})
+
+        // 200 success
+        res.status(200).json({ msg: "Quiz created successfully", quiz: quiz })
     })
 }
 
 // get all quizzes
 exports.getQuizzes = (req, res, next) => {
+    // validate id 
+    if(req.params.id === "") {
+        res.status(400).json({ msg: "request error" })
+        return 
+    }
+
     Quiz.getAll({}, (err, quizzes) => {
+        // 500 db error
         if(err) {
-            res.json({error: err})
-            return
+            res.status(500).json( {msg: "database error" });
+            return 
         }
-        res.json({ quizzes: quizzes })
+
+        if(quizzes.length === 0) {
+            res.status(404).json({ msg: "Error no quizzes found" })
+            return 
+        }
+
+        // 200 success
+        res.status(200).json({ quizzes: quizzes });
     })
 }
 
 // get quiz by id
 exports.getQuizByID = (req, res, next) => {
-    Quiz.getByID({_id: req.params._id}, (err, quiz) => {
+    // validation 
+    // 400 request error 
+    if(req.params.id === "") {
+        res.status(400).json({ msg: "request error" })
+        return 
+    }
+
+    Quiz.getByID({_id: req.params.id}, (err, quiz) => {
+        // 500 db error
         if(err) {
-            res.status(400).json( {msg: `No member with the id of ${req.params.id}` });
+            res.status(500).json( {msg: "database error" });
             return 
         } 
-        res.json({quiz: quiz})
-    })
-}
-
-// get quiz by title 
-exports.getQuizByTitle = (req, res, next) => {
-    Quiz.getByTitle({title: req.params.title}, (err, quiz) => {
-        if(err) {
-            res.json({error: err})
-            return 
+        
+        // 404 not found
+        if(quiz === null) {
+            res.status(404).json( {msg: "not found error" });
+            return            
         }
-        res.json({quiz: quiz})
+        
+        // 200 success
+        res.status(200).json({ quiz: quiz })
     })
 }
 
 // update quiz 
 exports.updateQuiz = (req, res, next) => {
+    // validation
+    // 400 request error
+    if(req.body.title === "") {
+        if(req.body.description === "") {
+            if(req.body.questions.length === 0) {
+                // if all three empty/nil
+                res.status(400).json( { msg: "request error" });
+                return 
+            }
+        }
+    }
+
+    // if id empty 
+    if(req.params.id === "") {
+        res.status(400).json( { msg: "request error" });
+        return 
+    }
+
     var quiz = {
         title: req.body.title, 
         description: req.body.description,
@@ -61,73 +111,27 @@ exports.updateQuiz = (req, res, next) => {
     }
 
     Quiz.updateOne({_id: req.params.id}, quiz, (err, quiz) => {
+        // 500 db error
         if(err) {
-            res.json({error: err})
-            return
-        }
-        res.json({ msg: "Quiz updated successfully", quiz: quiz})
-    })
-}
+            res.status(500).json( {msg: "database error" });
+            return 
+        } 
 
-// add submission to quiz
-exports.submitQuiz = (req, res, next) => {
-    // https://stackoverflow.com/a/28376006
-    var locationObject = req.body.submission.questions,
-    insertObjects = [],
-    key;
-
-    // loop through questions and isnert in insertObjects
-    for (key in locationObject) { 
-        insertObjects.push(locationObject[key]); 
-    }
-
-    let submission = {
-        username: req.body.submission.username,
-        grade: req.body.submission.grade,
-        questions: insertObjects
-    }
-
-    // updateOne (query, submission)
-    Quiz.appendOne({_id: req.params._id}, {submissions: submission}, (err, quiz) => {
-        if(err) {
-            res.json({error: err})
-            return
-        }
-        res.json({ msg: "Quiz updated successfully", quiz: quiz})
+        // 200 success
+        res.status(200).json({ msg: "Quiz updated successfully", quiz: quiz })
     })
 }
 
 // delete quiz by id 
 exports.deleteQuiz = (req, res, next) => {
     Quiz.delete({_id: req.params.id}, (err, quiz) => {
+        // 500 db error
         if(err) {
-            res.json({error: err})
-            return
-        }
-        res.json({ msg: `Quiz with id ${quiz._id} and title "${quiz.title}" deleted successfully`})
-    })
-}
-
-// get all submissions by a particular quiz id 
-exports.getAllSubmissions = (req, res, next) => {
-    Quiz.getByID({_id: req.params._id}, (err, quiz) => {
-        if(err) {
-            res.json({error: err})
+            res.status(500).json( {msg: "database error" });
             return 
-        }
-        res.json( { subs: quiz.submissions })
+        } 
+
+        // 200 success
+        res.status(200).json({ msg: "Quiz deleted successfully" })
     })
 }
-
-// get one submission by a particular quiz id and a username
-// use Quiz.getAll because it uses the find() method. 
-// since we need to query by  th quiz id and the username
-// exports.getSubsByUsernameAndID = (req, res, next) => {
-//     Quiz.getAll({_id: req.params._id, username: req.params.username}, (err, subs) => {
-//         if(err) {
-//             res.json({error: err})
-//             return 
-//         }
-//         res.json( { submissions: subs })
-//     })
-// }

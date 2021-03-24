@@ -4,14 +4,13 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema; 
 
 var submissionSchema = new Schema({
+    quiz_id: Schema.Types.ObjectId,
     username: String,  
-    grade: Number,
     questions: [
         {
             _id: false,
             question_id: Schema.Types.ObjectId,
             answer: Schema.Types.Mixed,
-            correct: String
         }
     ]
 })

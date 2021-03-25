@@ -12,15 +12,16 @@ mongo();
 // Middleware Parser
 app.use(express.json());
 
-// eg. /api/quizzes
+// use routes on root path
 app.use('', router);
+
+// frontend (temp) 
+app.get('/', function (req, res) {
+    res.send('Welcome...')
+})
 
  // call quizes routes with router
 routes(router);
-
-// old 
-// api/quizes Route 
-// app.use('/api/quizes', require('./routes/api/quizes'));
 
 // listen and serve
 const PORT = process.env.PORT || 5000;
